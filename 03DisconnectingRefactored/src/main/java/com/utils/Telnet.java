@@ -13,8 +13,8 @@ public class TelnetClientConnection{
 
     private String host = "127.0.0.1";
     private String port = "28516";
-    private InputStream reader;
-    private OutputStream writer;
+    private Scanner reader;
+    private PrintWriter writer;
     private Telnetclient telnetClient = null;
     private static final int READ_TIMEOUT = 300000;
 
@@ -39,20 +39,20 @@ public class TelnetClientConnection{
             telnetClient.connect(host, Integer.parseInt(port));
             telnetClient.setSoTimeout(READ_TIMEOUT);
             // Initialize the reader writer
-            writer = telnetClient.getOutputStream();
-            reader = telnetClient.getInputStream();
+            writer = new PrintWriter (telnetClient.getOutputStream(), true);
+            reader = new Scanner(telnetClient.getInputStream(socket));
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Could not connect, unable to open telnet session " + e.getMessage());
         }
     }
 
-    public void disconnect() throws TransportException {
+    public void disconnect() throws Exception {
         try {
             telnetClient.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new TransportException("Problems when disconnecting: " + e.getMessage());
+            throw new Exception("Problems when disconnecting: " + e.getMessage());
         }
     }
 
